@@ -7,11 +7,16 @@ WINDOW = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption("Sudoku Solver")
 WHITE = (255,255,255)
 BLACK = (0,0,0)
+GREY = (255,240,240)
+BEIGE = (249,243,221)
 RED = (255,0,0)
+BLUE = (0,0,255)
+GREEN = (0,255,0)
 squares = [[0 for i in range(9)] for j in range(9)]
 choices = [1,2,3,4,5,6,7,8,9]
 pygame.font.init()  
 myfont = pygame.font.SysFont('Comic Sans MS', 25)
+myfont2 = pygame.font.SysFont('Comic Sans MS', 45)
 FPS = 120
 GameSpeed = 50
 squareHeight,squareWidth = 75,75
@@ -42,17 +47,25 @@ def draw_all(chosen):
     update_display()
 
 def draw_window():
-    WINDOW.fill(WHITE)
+    WINDOW.fill(BEIGE)
     
 def draw_board():
     for x in range(9):
         for y in range(9):
-            xLoc = (90 + (80 * x))
+            xLoc = (150 + (80 * x))
             yLoc = (90 + (80 * y))
-            pygame.draw.rect(WINDOW, BLACK, [yLoc,xLoc, squareHeight,squareWidth], 2)
-            valueSurface = myfont.render(str(squares[x][y]), True, (0, 0, 0))
+            pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, squareHeight,squareWidth], 4)
+            pygame.draw.rect(WINDOW, WHITE, [xLoc+1,yLoc+1, squareHeight-1,squareWidth-1])
+            valueSurface = myfont2.render(str(squares[x][y]), True, BLACK)
             if(squares[x][y] != 0):
-                WINDOW.blit(valueSurface,(xLoc + squareHeight/2.25 ,yLoc + squareWidth/4))
+                WINDOW.blit(valueSurface,(xLoc + squareHeight/2.75 ,yLoc + squareWidth/8))
+
+def draw_reset_button():
+    xLoc = 450
+    yLoc = 10
+    pygame.draw.rect(WINDOW, BLACK, [xLoc-75/2,yLoc, 75,45], 2)
+    valueSurface = myfont.render("Solve", True, BLACK)
+    WINDOW.blit(valueSurface,(xLoc-75/2.5 ,yLoc))
 
 def draw_solve_button():
     xLoc = 450
@@ -62,16 +75,18 @@ def draw_solve_button():
     WINDOW.blit(valueSurface,(xLoc-75/2.5 ,yLoc))
 
 def draw_choices(chosen):
-    for x in choices:
-        xLoc = 10
-        yLoc = (30 + (80 * x))
-        he = 45
-        wi = 45
-        pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, he,wi], 2)
-        valueSurface = myfont.render(str(x), True, BLACK)
+    for i, x in enumerate(choices):
+        xLoc = 20
+        yLoc = (90 + (80 * i))
+        he = 75
+        wi = 75
+        pygame.draw.rect(WINDOW, GREY, [xLoc+1,yLoc+1, he-1,wi-1])
+        valueSurface = myfont2.render(str(x), True, BLACK)
         if(chosen == x):
-            valueSurface = myfont.render(str(x), True, RED)
-        WINDOW.blit(valueSurface,(xLoc + he/3 ,yLoc + wi/8))
+            pygame.draw.rect(WINDOW, GREEN, [xLoc,yLoc, he,wi], 2)
+        else:
+            pygame.draw.rect(WINDOW, RED, [xLoc,yLoc, he,wi], 2)
+        WINDOW.blit(valueSurface,(xLoc + he/2.75 ,yLoc + wi/8))
 
 def checkMouseClick(chosen):
     mouse = pygame.mouse.get_pos()
@@ -81,7 +96,7 @@ def checkMouseClick(chosen):
         solve(chosen)
     for x in range(9):
         for y in range(9):
-            xLoc = (90 + (80 * x))
+            xLoc = (150 + (80 * x))
             yLoc = (90 + (80 * y))
             if xLoc <= mouse[0] <= (xLoc + squareWidth) and yLoc <= mouse[1] <= (yLoc + squareHeight): 
                 squares[x][y] = chosen
