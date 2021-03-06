@@ -20,6 +20,7 @@ myfont = pygame.font.SysFont('Comic Sans MS', 35)
 myfont2 = pygame.font.SysFont('Comic Sans MS', 45)
 FPS = 120
 GameSpeed = 5
+chosen = 0
 squareHeight,squareWidth = 75,75
 
 def createSquares():
@@ -35,8 +36,8 @@ def createSquares():
 
 def main():
     global squares
+    global chosen
     squares = createSquares()
-    chosen = 0
     clock = pygame.time.Clock()
     mouse = pygame.mouse.get_pos() 
     run = True
@@ -48,15 +49,15 @@ def main():
             if event.type == pygame.KEYDOWN:
                 chosen = checkKeyDown(event)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                checkMouseClick(chosen)
-        draw_all(chosen)
+                checkMouseClick()
+        draw_all()
     
     pygame.quit()
 
-def draw_all(chosen):
+def draw_all():
     draw_window()
     draw_board()
-    draw_choices(chosen)
+    draw_choices()
     draw_solve_button()
     draw_reset_button()
     update_display()
@@ -95,7 +96,8 @@ def draw_solve_button():
     valueSurface = myfont.render("SOLVE", True, BLACK)
     WINDOW.blit(valueSurface,(xLoc+ xLoc/2 +20 ,yLoc))
 
-def draw_choices(chosen):
+def draw_choices():
+    global chosen
     for i, x in enumerate(choices):
         xLoc = 20
         yLoc = (90 + (80 * i))
@@ -113,7 +115,8 @@ def resetBoard():
     global squares
     squares = createSquares()
 
-def checkMouseClick(chosen):
+def checkMouseClick():
+    global chosen
     mouse = pygame.mouse.get_pos()
     solveButtonLocX = 150
     solveButtonLocY = 25
@@ -133,6 +136,13 @@ def checkMouseClick(chosen):
                     squares[x][y][1] = False
                 else:
                     squares[x][y][1] = True
+    for i, x in enumerate(choices):
+        xLoc = 20
+        yLoc = (90 + (80 * i))
+        he = 75
+        wi = 75
+        if xLoc <= mouse[0] <= (xLoc + squareWidth) and yLoc <= mouse[1] <= (yLoc + squareHeight): 
+                chosen = x
 
 def checkKeyDown(event):
     if event.key == pygame.K_1:
