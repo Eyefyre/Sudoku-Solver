@@ -49,7 +49,10 @@ def main():
             if event.type == pygame.KEYDOWN:
                 chosen = checkKeyDown(event)
             if event.type == pygame.MOUSEBUTTONDOWN:
-                checkMouseClick()
+                if event.button == 3:
+                    chosen = 0
+                elif event.button == 1:
+                    checkMouseClick()
         draw_all()
     
     pygame.quit()
