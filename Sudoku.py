@@ -12,7 +12,8 @@ BEIGE = (249,243,221)
 RED = (255,0,0)
 BLUE = (0,0,255)
 GREEN = (0,255,0)
-squares = [[0 for i in range(9)] for j in range(9)]
+#squares = [[0 for i in range(9)] for j in range(9)]
+squares = []
 choices = [1,2,3,4,5,6,7,8,9]
 pygame.font.init()  
 myfont = pygame.font.SysFont('Comic Sans MS', 35)
@@ -21,7 +22,20 @@ FPS = 120
 GameSpeed = 5
 squareHeight,squareWidth = 75,75
 
+def createSquares():
+    squares = []
+    for i in range(9):
+        row = []
+        for j in range(9):
+            row.append([0,False])
+        squares.append(row)
+    #print(squares)
+    return squares
+
+
 def main():
+    global squares
+    squares = createSquares()
     chosen = 0
     clock = pygame.time.Clock()
     mouse = pygame.mouse.get_pos() 
@@ -55,10 +69,14 @@ def draw_board():
         for y in range(9):
             xLoc = (150 + (80 * x))
             yLoc = (90 + (80 * y))
-            pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, squareHeight,squareWidth], 4)
+            if squares[x][y][1]:
+                pygame.draw.rect(WINDOW, BLUE, [xLoc,yLoc, squareHeight,squareWidth], 8)
+            else: 
+                pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, squareHeight,squareWidth], 4)
             pygame.draw.rect(WINDOW, WHITE, [xLoc+1,yLoc+1, squareHeight-1,squareWidth-1])
-            valueSurface = myfont2.render(str(squares[x][y]), True, BLACK)
-            if(squares[x][y] != 0):
+            #print(squares[x][y])
+            valueSurface = myfont2.render(str(squares[x][y][0]), True, BLACK)
+            if(squares[x][y][0] != 0):
                 WINDOW.blit(valueSurface,(xLoc + squareHeight/2.75 ,yLoc + squareWidth/8))
 
 def draw_reset_button():
@@ -75,7 +93,7 @@ def draw_solve_button():
     pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, 315,45], 4)
     pygame.draw.rect(WINDOW, GREY, [xLoc+1,yLoc+1, 315-1,45-1])
     valueSurface = myfont.render("SOLVE", True, BLACK)
-    WINDOW.blit(valueSurface,(xLoc+ xLoc/2 ,yLoc))
+    WINDOW.blit(valueSurface,(xLoc+ xLoc/2 +20 ,yLoc))
 
 def draw_choices(chosen):
     for i, x in enumerate(choices):
@@ -86,14 +104,14 @@ def draw_choices(chosen):
         pygame.draw.rect(WINDOW, GREY, [xLoc+1,yLoc+1, he-1,wi-1])
         valueSurface = myfont2.render(str(x), True, BLACK)
         if(chosen == x):
-            pygame.draw.rect(WINDOW, GREEN, [xLoc,yLoc, he,wi], 2)
+            pygame.draw.rect(WINDOW, GREEN, [xLoc,yLoc, he,wi], 4)
         else:
-            pygame.draw.rect(WINDOW, RED, [xLoc,yLoc, he,wi], 2)
+            pygame.draw.rect(WINDOW, RED, [xLoc,yLoc, he,wi], 4)
         WINDOW.blit(valueSurface,(xLoc + he/2.75 ,yLoc + wi/8))
 
 def resetBoard():
     global squares
-    squares = [[0 for i in range(9)] for j in range(9)]
+    squares = createSquares()
 
 def checkMouseClick(chosen):
     mouse = pygame.mouse.get_pos()
@@ -110,7 +128,11 @@ def checkMouseClick(chosen):
             xLoc = (150 + (80 * x))
             yLoc = (90 + (80 * y))
             if xLoc <= mouse[0] <= (xLoc + squareWidth) and yLoc <= mouse[1] <= (yLoc + squareHeight): 
-                squares[x][y] = chosen
+                squares[x][y][0] = chosen
+                if chosen == 0:
+                    squares[x][y][1] = False
+                else:
+                    squares[x][y][1] = True
 
 def checkKeyDown(event):
     if event.key == pygame.K_1:
@@ -139,7 +161,7 @@ def update_display():
 def printGrid():
     for i in range(9):
         for j in range(9):
-            print(squares[j][i],end = " ")
+            print(squares[j][i][0],end = " ")
         print()
     print()
 
@@ -154,21 +176,21 @@ def solve(chosen):
 
     for i in range(1,10):
         if valid(i, (x, y)):
-            squares[x][y] = i
+            squares[x][y][0] = i
             if solve(chosen):
                 return True
-            squares[x][y] = 0
+            squares[x][y][0] = 0
 
     return False
 
 
 def valid(v, pos):
     for i in range(9):
-        if squares[pos[0]][i] == v and pos[1] != i:
+        if squares[pos[0]][i][0] == v and pos[1] != i:
             return False
 
     for i in range(9):
-        if squares[i][pos[1]] == v and pos[0] != i:
+        if squares[i][pos[1]][0] == v and pos[0] != i:
             return False
 
     box_x = (pos[1] // 3) * 3
@@ -176,7 +198,7 @@ def valid(v, pos):
 
     for i in range(box_y, box_y + 3):
         for j in range(box_x, box_x + 3):
-            if squares[i][j] == v and (i,j) != pos:
+            if squares[i][j][0] == v and (i,j) != pos:
                 return False
 
     return True
@@ -184,7 +206,7 @@ def valid(v, pos):
 def find_empty_square():
     for i in range(9):
         for j in range(9):
-            if squares[i][j] == 0:
+            if squares[i][j][0] == 0:
                 return (i, j)
 
     return None
