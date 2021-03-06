@@ -123,7 +123,7 @@ def checkMouseClick():
     resetButtonLocX = 550
     resetButtonLocY = 25
     if solveButtonLocX <= mouse[0] <= (solveButtonLocX + 315) and solveButtonLocY <= mouse[1] <= (solveButtonLocY + 45): 
-        solve(chosen)
+        solve()
     if resetButtonLocX <= mouse[0] <= (resetButtonLocX + 315) and resetButtonLocY <= mouse[1] <= (resetButtonLocY + 45): 
         resetBoard()
     for x in range(9):
@@ -175,9 +175,9 @@ def printGrid():
         print()
     print()
 
-def solve(chosen):
+def solve():
     for x in range(GameSpeed):
-        draw_all(chosen)
+        draw_all()
     find = find_empty_square()
     if not find:
         return True
@@ -187,7 +187,7 @@ def solve(chosen):
     for i in range(1,10):
         if valid(i, (x, y)):
             squares[x][y][0] = i
-            if solve(chosen):
+            if solve():
                 return True
             squares[x][y][0] = 0
 
