@@ -15,10 +15,10 @@ GREEN = (0,255,0)
 squares = [[0 for i in range(9)] for j in range(9)]
 choices = [1,2,3,4,5,6,7,8,9]
 pygame.font.init()  
-myfont = pygame.font.SysFont('Comic Sans MS', 25)
+myfont = pygame.font.SysFont('Comic Sans MS', 35)
 myfont2 = pygame.font.SysFont('Comic Sans MS', 45)
 FPS = 120
-GameSpeed = 50
+GameSpeed = 5
 squareHeight,squareWidth = 75,75
 
 def main():
@@ -44,6 +44,7 @@ def draw_all(chosen):
     draw_board()
     draw_choices(chosen)
     draw_solve_button()
+    draw_reset_button()
     update_display()
 
 def draw_window():
@@ -61,18 +62,20 @@ def draw_board():
                 WINDOW.blit(valueSurface,(xLoc + squareHeight/2.75 ,yLoc + squareWidth/8))
 
 def draw_reset_button():
-    xLoc = 450
-    yLoc = 10
-    pygame.draw.rect(WINDOW, BLACK, [xLoc-75/2,yLoc, 75,45], 2)
-    valueSurface = myfont.render("Solve", True, BLACK)
-    WINDOW.blit(valueSurface,(xLoc-75/2.5 ,yLoc))
+    xLoc = 550
+    yLoc = 25
+    pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, 315,45], 4)
+    pygame.draw.rect(WINDOW, GREY, [xLoc+1,yLoc+1, 315-1,45-1])
+    valueSurface = myfont.render("RESET", True, BLACK)
+    WINDOW.blit(valueSurface,(xLoc+ xLoc/6 ,yLoc))
 
 def draw_solve_button():
-    xLoc = 450
-    yLoc = 10
-    pygame.draw.rect(WINDOW, BLACK, [xLoc-75/2,yLoc, 75,45], 2)
-    valueSurface = myfont.render("Solve", True, BLACK)
-    WINDOW.blit(valueSurface,(xLoc-75/2.5 ,yLoc))
+    xLoc = 150
+    yLoc = 25
+    pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, 315,45], 4)
+    pygame.draw.rect(WINDOW, GREY, [xLoc+1,yLoc+1, 315-1,45-1])
+    valueSurface = myfont.render("SOLVE", True, BLACK)
+    WINDOW.blit(valueSurface,(xLoc+ xLoc/2 ,yLoc))
 
 def draw_choices(chosen):
     for i, x in enumerate(choices):
@@ -88,12 +91,20 @@ def draw_choices(chosen):
             pygame.draw.rect(WINDOW, RED, [xLoc,yLoc, he,wi], 2)
         WINDOW.blit(valueSurface,(xLoc + he/2.75 ,yLoc + wi/8))
 
+def resetBoard():
+    global squares
+    squares = [[0 for i in range(9)] for j in range(9)]
+
 def checkMouseClick(chosen):
     mouse = pygame.mouse.get_pos()
-    solveButtonLocX = 450
-    solveButtonLocY = 10
-    if solveButtonLocX-75/2 <= mouse[0] <= (solveButtonLocX + 75/2) and solveButtonLocY <= mouse[1] <= (solveButtonLocY + 45): 
+    solveButtonLocX = 150
+    solveButtonLocY = 25
+    resetButtonLocX = 550
+    resetButtonLocY = 25
+    if solveButtonLocX <= mouse[0] <= (solveButtonLocX + 315) and solveButtonLocY <= mouse[1] <= (solveButtonLocY + 45): 
         solve(chosen)
+    if resetButtonLocX <= mouse[0] <= (resetButtonLocX + 315) and resetButtonLocY <= mouse[1] <= (resetButtonLocY + 45): 
+        resetBoard()
     for x in range(9):
         for y in range(9):
             xLoc = (150 + (80 * x))
