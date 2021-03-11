@@ -12,7 +12,6 @@ BEIGE = (249,243,221)
 RED = (255,0,0)
 BLUE = (0,0,255)
 GREEN = (0,255,0)
-#squares = [[0 for i in range(9)] for j in range(9)]
 squares = []
 choices = [1,2,3,4,5,6,7,8,9]
 pygame.font.init()  
@@ -30,7 +29,6 @@ def createSquares():
         for j in range(9):
             row.append([0,False])
         squares.append(row)
-    #print(squares)
     return squares
 
 
@@ -78,10 +76,14 @@ def draw_board():
             else: 
                 pygame.draw.rect(WINDOW, BLACK, [xLoc,yLoc, squareHeight,squareWidth], 4)
             pygame.draw.rect(WINDOW, WHITE, [xLoc+1,yLoc+1, squareHeight-1,squareWidth-1])
-            #print(squares[x][y])
             valueSurface = myfont2.render(str(squares[x][y][0]), True, BLACK)
             if(squares[x][y][0] != 0):
                 WINDOW.blit(valueSurface,(xLoc + squareHeight/2.75 ,yLoc + squareWidth/8))
+
+    pygame.draw.line(WINDOW,BLACK,(386,90),(386,805),5)
+    pygame.draw.line(WINDOW,BLACK,(626,90),(626,805),5)
+    pygame.draw.line(WINDOW,BLACK,(150,326),(870,326),5)
+    pygame.draw.line(WINDOW,BLACK,(150,566),(870,566),5)
 
 def draw_reset_button():
     xLoc = 550
